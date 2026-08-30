@@ -114,13 +114,6 @@ OPENAI_EMBED_MODEL=text-embedding-3-small
 
 The embedding model controls the vector form saved for each uploaded chunk. The chat model controls the final answer.
 
-To avoid saving local vectors in `data/rag-store.json`, switch to OpenAI-hosted vector storage:
-
-```env
-RAG_STORE_PROVIDER=openai
-OPENAI_VECTOR_STORE_ID=vs_your_vector_store_id
-```
-
 ## Can I save the uploaded PDF into the LLM model itself?
 
 No. There is no function in this repository, or normal LLM API call, where you can push a PDF and permanently write it into the model's learned weights. For document Q&A, use one of these two approaches instead:
@@ -131,22 +124,25 @@ Your current code already saves uploaded document chunks as vectors in `data/rag
 
 ### Alternative: save files in an OpenAI-hosted vector store
 
-If you want OpenAI to host the vector store instead of saving vectors in `data/rag-store.json`, use the service in `rag/openaiVectorStore.js`:
+If you want OpenAI to host the vector store instead of saving vectors in `data/rag-store.json`, add code like this in a new service, for example `rag/openaiVectorStore.js`:
 
 ```js
-import OpenAI, { toFile } from 'openai';
+import fs from 'fs';
+import OpenAI from 'openai';
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function uploadFileToOpenAIVectorStore(buffer, fileName) {
+export async function uploadFileToOpenAIVectorStore(filePath) {
   const vectorStoreId = process.env.OPENAI_VECTOR_STORE_ID;
 
   if (!vectorStoreId) {
     throw new Error('OPENAI_VECTOR_STORE_ID is required');
   }
 
-  const file = await toFile(buffer, fileName);
-  return client.vectorStores.files.uploadAndPoll(vectorStoreId, file);
+  return client.vectorStores.files.uploadAndPoll(
+    vectorStoreId,
+    fs.createReadStream(filePath),
+  );
 }
 ```
 
@@ -166,17 +162,6 @@ const response = await client.responses.create({
 ```
 
 That still does **not** save the PDF into the LLM model weights. It saves the file in a hosted vector store that the model can search at answer time.
-
-With `RAG_STORE_PROVIDER=openai`, the existing API routes use this hosted flow:
-
-```bash
-curl -X POST http://localhost:3000/api/rag/upload \
-  -F "file=@/path/to/document.pdf"
-
-curl -X POST http://localhost:3000/api/rag/ask \
-  -H "Content-Type: application/json" \
-  -d '{"question":"What is this document about?"}'
-```
 
 ### Fine-tuning is different
 

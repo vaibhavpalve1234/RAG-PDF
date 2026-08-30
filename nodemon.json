@@ -1,0 +1,18 @@
+{
+  "watch": [
+    "api",
+    "models",
+    "rag",
+    "kernel",
+    "shared",
+    "config"
+  ],
+  "ignore": [
+    "rag/rag-store.json",
+    "rag/*.json",
+    "uploads/**",
+    "data/**",
+    "node_modules/**"
+  ],
+  "ext": "js,json,mjs"
+}

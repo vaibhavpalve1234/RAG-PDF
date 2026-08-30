@@ -1,0 +1,49 @@
+{
+  "name": "ai-os",
+  "version": "1.0.0",
+  "description": "AI Operating System — Multi-model, multi-agent autonomous runtime",
+  "type": "module",
+  "main": "api/server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "dev": "node --watch server.js",
+    "kernel": "node kernel/agentScheduler.js",
+    "dashboard": "node dashboard/analytics.js"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "data/**",
+      "uploads/**",
+      "rag/*.json",
+      "rag/rag-store.json",
+      "logs/**",
+      "tmp/**"
+    ],
+    "ext": "js,mjs,json",
+    "delay": 300
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.54.0",
+    "@tavily/core": "^0.5.0",
+    "boxen": "^7.1.1",
+    "chalk": "^5.3.0",
+    "chromadb": "^1.9.2",
+    "cli-table3": "^0.6.5",
+    "dotenv": "^16.6.1",
+    "eventemitter3": "^5.0.1",
+    "express": "^4.22.2",
+    "multer": "^2.3.0",
+    "node-cron": "^4.6.0",
+    "nodemon": "^3.1.14",
+    "openai": "^4.98.0",
+    "ora": "^8.0.1",
+    "p-limit": "^5.0.0",
+    "p-retry": "^6.2.1",
+    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^6.3.289",
+    "undici": "^8.10.0",
+    "uuid": "^14.0.2",
+    "ws": "^8.18.0",
+    "zod": "^3.23.8"
+  }
+}

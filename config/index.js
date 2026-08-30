@@ -17,6 +17,7 @@ export const Config = {
     // Provider used for embeddings stored in vector DB (defaults to OpenAI).
     embeddingsProvider: process.env.EMBEDDINGS_PROVIDER || 'openai',
     openai:         process.env.OPENAI_MODEL      || 'gpt-4o',
+    openaiEmbed:    process.env.OPENAI_EMBED_MODEL || 'text-embedding-3-small',
     claude:         process.env.CLAUDE_MODEL      || 'claude-sonnet-4-6',
     ollama:         process.env.OLLAMA_MODEL,
     ollamaEmbed:    process.env.OLLAMA_EMBED_MODEL || '',

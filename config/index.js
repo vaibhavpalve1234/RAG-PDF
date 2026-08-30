@@ -24,7 +24,7 @@ export const Config = {
     ollamaUrl:      process.env.OLLAMA_URL        || 'http://localhost:11434',
     huggingfaceUrl: process.env.HF_INFERENCE_URL  || 'https://api-inference.huggingface.co',
     maxTokens:      parseInt(process.env.MAX_TOKENS) || 2000,
-    temperature:    parseFloat(process.env.TEMPERATURE) || 0.2,
+    temperature:    parseFloat(process.env.TEMPERATURE) || 0.5,
   },
 
   // Memory

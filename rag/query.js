@@ -61,21 +61,11 @@ export async function askRag(question, options = {}) {
     )
     .join("\n\n");
 
-  const prompt = `
-CONTEXT:
-${context}
-
-QUESTION:
-${question}
-
-ANSWER:
-`.trim();
+  const prompt = `CONTEXT: ${context} QUESTION: ${question} ANSWER: `.trim();
 
   const model = await getModel(modelName);
-  console.log(model)
-
   const completion = await model.complete(prompt, {
-    system: "You are a document question-answering assistant.",
+    // system: "You are a document question-answering assistant.",
     temperature: options.temperature ?? Config.models.temperature,
     maxTokens: options.maxTokens || Config.models.maxTokens,
   });

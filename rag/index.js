@@ -14,6 +14,7 @@ export { deleteDocuments } from "./delete.js";
 export { getRagStats } from "./stats.js";
 export { createRagRouter } from "./router.js";
 export { createVector } from "./embeddings.js";
+export { askOpenAIVectorStore, uploadToOpenAIVectorStore } from "./openaiVectorStore.js";
 export { cosineSimilarity, matchesFilter } from "./vector-math.js";
 export { supportedExtensions } from "../utils/extractor.js";
 export { DEFAULT_COLLECTION } from "./constants.js";

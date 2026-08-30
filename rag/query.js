@@ -82,9 +82,9 @@ ANSWER:
 
   return {
     answer: completion.text,
-    sources: matches.map(toSource),
-    model: completion.model || modelName,
-    usage: completion.usage,
+    // sources: matches.map(toSource),
+    // model: completion.model || modelName,
+    // usage: completion.usage,
   };
 }
 

@@ -62,16 +62,6 @@ export async function askRag(question, options = {}) {
     .join("\n\n");
 
   const prompt = `
-Answer the question using ONLY the context below.
-
-Rules:
-- Do not use outside knowledge.
-- Do not invent information.
-- If the answer is not present in the context, say:
-  "I do not know from the uploaded documents."
-- Keep the answer short and direct.
-- Mention the source file/page when possible.
-
 CONTEXT:
 ${context}
 

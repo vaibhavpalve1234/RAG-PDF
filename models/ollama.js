@@ -32,16 +32,16 @@ export const OllamaAdapter = {
         num_predict: maxTokens,
       },
     };
-    const controller = new AbortController();
-    const timeoutId = setTimeout(1800000, () => controller.abort()); // 30 min
+    // const controller = new AbortController();
+    // const timeoutId = setTimeout(1800000, () => controller.abort()); // 30 min
     try {
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-        signal: controller.signal,
+        // signal: controller.signal,
       });
-      clearTimeout(timeoutId);
+      // clearTimeout(timeoutId);
       if (!res.ok) {
         const errorText = await res.text();
         throw new Error(`Ollama HTTP ${res.status}: ${errorText}`);

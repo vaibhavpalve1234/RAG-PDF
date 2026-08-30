@@ -34,7 +34,9 @@ export function chunkText(
   chunkSize = DEFAULT_CHUNK_SIZE,
   overlap = DEFAULT_CHUNK_OVERLAP,
 ) {
-  const clean = String(text || "").replace(/\s+/g, " ").trim();
+  const clean = String(text || "")
+    .replace(/\s+/g, " ")
+    .trim();
 
   if (!clean) return [];
 
@@ -165,15 +167,6 @@ export async function askRag(question, options = {}) {
     .join("\n\n");
 
   const prompt = `
-Answer the question using ONLY the context below.
-
-Rules:
-- Do not use outside knowledge.
-- Do not invent information.
-- If the answer is not present in the context, say:
-  "I do not know from the uploaded documents."
-- Keep the answer short and direct.
-- Mention the source file/page when possible.
 
 CONTEXT:
 ${context}
@@ -254,7 +247,9 @@ export async function deleteDocuments(options = {}) {
       }
     } else {
       // remove one document's chunks, from one collection or all of them
-      const targets = collection ? [collection] : Object.keys(store.collections);
+      const targets = collection
+        ? [collection]
+        : Object.keys(store.collections);
 
       for (const name of targets) {
         const bucket = store.collections[name];
@@ -271,7 +266,12 @@ export async function deleteDocuments(options = {}) {
     store.updatedAt = new Date().toISOString();
     await writeStore(store);
 
-    return { removed, collectionsCleared, collection: collection || null, documentId: documentId || null };
+    return {
+      removed,
+      collectionsCleared,
+      collection: collection || null,
+      documentId: documentId || null,
+    };
   });
 }
 
@@ -293,7 +293,9 @@ export async function createRagRouter() {
   router.post("/upload", upload.single("file"), async (req, res) => {
     try {
       if (!req.file) {
-        return res.status(400).json({ ok: false, error: "No file uploaded (field name: 'file')" });
+        return res
+          .status(400)
+          .json({ ok: false, error: "No file uploaded (field name: 'file')" });
       }
 
       const result = await ingestFile(
@@ -438,7 +440,8 @@ async function addVectorDocuments(collection, docs, options = {}) {
 // ============================================================
 
 async function createVector(text, options = {}) {
-  const embeddingProvider = options.embeddingProvider || Config.models.embeddingsProvider || null;
+  const embeddingProvider =
+    options.embeddingProvider || Config.models.embeddingsProvider || null;
 
   if (embeddingProvider) {
     try {
@@ -451,7 +454,9 @@ async function createVector(text, options = {}) {
 
       return vector;
     } catch (err) {
-      log.warn(`Embedding provider "${embeddingProvider}" failed: ${err.message}`);
+      log.warn(
+        `Embedding provider "${embeddingProvider}" failed: ${err.message}`,
+      );
       log.warn("Falling back to hashing embeddings.");
     }
   }
@@ -485,12 +490,18 @@ function hashEmbedding(text, dimensions) {
 // ============================================================
 
 async function loadFileBuffer(input = {}) {
-  if (input.buffer) return Buffer.isBuffer(input.buffer) ? input.buffer : Buffer.from(input.buffer);
+  if (input.buffer)
+    return Buffer.isBuffer(input.buffer)
+      ? input.buffer
+      : Buffer.from(input.buffer);
   if (input.base64) return Buffer.from(input.base64, "base64");
-  if (input.dataUrl) return Buffer.from(String(input.dataUrl).split(",").pop(), "base64");
+  if (input.dataUrl)
+    return Buffer.from(String(input.dataUrl).split(",").pop(), "base64");
   if (input.path) return readFile(input.path);
 
-  throw new Error("File input requires one of: path, base64, dataUrl, or buffer");
+  throw new Error(
+    "File input requires one of: path, base64, dataUrl, or buffer",
+  );
 }
 
 // ============================================================
@@ -532,7 +543,9 @@ export async function getRagStats() {
       name,
       {
         documents: value.documents.length,
-        sourceDocuments: new Set(value.documents.map((d) => d.metadata.documentId)).size,
+        sourceDocuments: new Set(
+          value.documents.map((d) => d.metadata.documentId),
+        ).size,
       },
     ]),
   );
@@ -546,7 +559,8 @@ export async function getRagStats() {
 
 function batchArray(items, size) {
   const result = [];
-  for (let i = 0; i < items.length; i += size) result.push(items.slice(i, i + size));
+  for (let i = 0; i < items.length; i += size)
+    result.push(items.slice(i, i + size));
   return result;
 }
 
@@ -570,7 +584,9 @@ function cosineSimilarity(a, b) {
   if (!Array.isArray(a) || !Array.isArray(b)) return 0;
 
   const len = Math.min(a.length, b.length);
-  let dot = 0, na = 0, nb = 0;
+  let dot = 0,
+    na = 0,
+    nb = 0;
 
   for (let i = 0; i < len; i++) {
     dot += a[i] * b[i];
@@ -583,7 +599,9 @@ function cosineSimilarity(a, b) {
 
 function matchesFilter(metadata = {}, filter = null) {
   if (!filter) return true;
-  return Object.entries(filter).every(([key, value]) => metadata[key] === value);
+  return Object.entries(filter).every(
+    ([key, value]) => metadata[key] === value,
+  );
 }
 
 function hashCode(value) {
@@ -596,5 +614,10 @@ function hashCode(value) {
 }
 
 function toSource(match) {
-  return { id: match.id, score: match.score, text: match.text, metadata: match.metadata };
+  return {
+    id: match.id,
+    score: match.score,
+    text: match.text,
+    metadata: match.metadata,
+  };
 }

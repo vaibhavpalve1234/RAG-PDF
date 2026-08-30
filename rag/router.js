@@ -12,6 +12,11 @@ import { askRag } from "./query.js";
 import { deleteDocuments } from "./delete.js";
 import { getRagStats } from "./stats.js";
 import { supportedExtensions } from "../utils/extractor.js";
+import {
+  askOpenAIVectorStore,
+  isOpenAIVectorStoreMode,
+  uploadToOpenAIVectorStore,
+} from "./openaiVectorStore.js";
 
 export async function createRagRouter() {
   const express = await import("express").then((m) => m.default);
@@ -25,6 +30,18 @@ export async function createRagRouter() {
     try {
       if (!req.file) {
         return res.status(400).json({ ok: false, error: "No file uploaded (field name: 'file')" });
+      }
+
+      if (isOpenAIVectorStoreMode(req.body)) {
+        const result = await uploadToOpenAIVectorStore(
+          {
+            buffer: req.file.buffer,
+            fileName: req.file.originalname,
+          },
+          req.body,
+        );
+
+        return res.json({ ok: true, ...result });
       }
 
       const result = await ingestFile(
@@ -57,7 +74,11 @@ export async function createRagRouter() {
           }
         : req.body;
 
-      const result = await ingestFile(fileInput, req.body?.options || req.body || {});
+      const options = req.body?.options || req.body || {};
+      const result = isOpenAIVectorStoreMode(options)
+        ? await uploadToOpenAIVectorStore(fileInput, options)
+        : await ingestFile(fileInput, options);
+
       res.json({ ok: true, ...result });
     } catch (err) {
       console.error(err);
@@ -67,7 +88,10 @@ export async function createRagRouter() {
 
   router.post("/ask", async (req, res) => {
     try {
-      const result = await askRag(req.body.question, req.body);
+      const result = isOpenAIVectorStoreMode(req.body)
+        ? await askOpenAIVectorStore(req.body.question, req.body)
+        : await askRag(req.body.question, req.body);
+
       res.json({ ok: true, ...result });
     } catch (err) {
       console.error(err);

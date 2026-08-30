@@ -36,6 +36,13 @@ export const Config = {
     maxHistory:   parseInt(process.env.MAX_HISTORY   || '500'),
   },
 
+  // RAG storage
+  rag: {
+    // "json" stores embeddings in data/rag-store.json.
+    // "openai" uploads files to OPENAI_VECTOR_STORE_ID and answers with file_search.
+    storageProvider: process.env.RAG_STORE_PROVIDER || 'json',
+  },
+
   // Queue
   queue: {
     concurrency:  parseInt(process.env.QUEUE_CONCURRENCY || '5'),
